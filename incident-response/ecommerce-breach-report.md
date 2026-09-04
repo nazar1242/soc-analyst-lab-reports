@@ -1,10 +1,14 @@
 # Incident Response Final Report: E-Commerce Data Breach
 
-**Date of Report:** January 2023
-**Severity:** Critical
-**Status:** Closed
-**Affected Records:** ~50,000 customers
-**Incident Type:** Data Breach / Insecure Direct Object Reference (IDOR)
+> *Case study completed as part of the Google Cybersecurity Professional Certificate ("Sound the Alarm: Detection and Response"), adapted and documented to demonstrate incident response methodology, forensic log analysis, and detection engineering skills.*
+
+| Meta          | Details |
+| :---          | :--- |
+| **Date**      | January 2023 |
+| **Severity**  | Critical |
+| **Status**    | Closed |
+| **Impact**    | ~50,000 customer records compromised |
+| **Type**      | Data Breach / Insecure Direct Object Reference (IDOR) |
 
 ## 1. Executive Summary
 
@@ -19,11 +23,27 @@ On December 28, 2022, the organization confirmed a severe security incident invo
 
 ## 3. Technical Investigation & Root Cause Analysis
 
-The IR team traveled on-site and initiated a forensic review of the web application infrastructure.
+The IR team conducted a forensic review of the web application infrastructure and SIEM alerts.
 
-* **Root Cause:** The breach was facilitated by an **Insecure Direct Object Reference (IDOR)** / Forced Browsing vulnerability within the e-commerce web application.
-* **Attack Vector:** The application failed to implement proper authorization checks on the purchase confirmation page. The threat actor bypassed access controls by sequentially modifying the `order_number` parameter in the URL string.
-* **Indicators of Compromise (IOCs):** Web server access logs revealed an anomalous, exceptionally high volume of sequential HTTP `GET` requests targeting customer order URIs originating from a single external IP address.
+* **Root Cause:** The breach was facilitated by an **Insecure Direct Object Reference (IDOR)** / Forced Browsing vulnerability within the e-commerce web application. The application failed to implement proper authorization checks on the `/order_confirmation` endpoint.
+* **Attack Vector & Artifacts:** The threat actor bypassed access controls by sequentially modifying the `order_number` parameter in the URL string. Web server access logs revealed an anomalous volume of sequential HTTP `GET` requests originating from a single external IP address (`198.51.100.45`).
+
+**Example access log excerpt (illustrative):**
+```text
+198.51.100.45 - - [28/Dec/2022:14:01:05 +0000] "GET /order_confirmation?order_number=49001 HTTP/1.1" 200 4532 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+198.51.100.45 - - [28/Dec/2022:14:01:06 +0000] "GET /order_confirmation?order_number=49002 HTTP/1.1" 200 4589 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+198.51.100.45 - - [28/Dec/2022:14:01:06 +0000] "GET /order_confirmation?order_number=49003 HTTP/1.1" 200 4511 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+```
+
+**Detection logic (Splunk SPL):**
+To quantify the scope of the exfiltration, the following query identifies IP addresses generating excessive requests to the vulnerable endpoint within a short timeframe:
+
+```spl
+index=web_logs sourcetype=nginx:access uri_path="/order_confirmation" status=200
+| stats count as request_count dc(uri_query) as unique_orders by clientip
+| where request_count > 100 AND unique_orders > 100
+| sort - request_count
+```
 
 ## 4. Containment, Eradication, and Recovery
 
@@ -32,8 +52,6 @@ The IR team traveled on-site and initiated a forensic review of the web applicat
 * **Customer Protection:** The organization provided complimentary identity protection and credit monitoring services to all 50,000 impacted individuals.
 
 ## 5. Post-Incident Recommendations (Lessons Learned)
-
-To harden the infrastructure and prevent recurrence, the following strategic actions are mandated:
 
 1. **Continuous Security Validation:** Integrate routine dynamic vulnerability scans (DAST) and schedule quarterly third-party penetration testing.
 2. **Access Control Hardening (Zero Trust principles):**
