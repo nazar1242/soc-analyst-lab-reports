@@ -2,9 +2,9 @@
 
 Welcome to my cybersecurity portfolio. This repository serves as a centralized documentation hub for my hands-on labs, security audits, and vulnerability assessments.
 
-The focus here is on Blue Team operations, risk management, and incident response analysis.
+The focus here is on Blue Team operations, risk management, and incident response analysis — alongside original, real-world security research.
 
-> *Note: The reports below are based on case studies from the Google Cybersecurity Professional Certificate, adapted with additional hands-on technical work (firewall configuration, log analysis, scan syntax) to demonstrate applied skills beyond the original course material.*
+> *Note: Some reports below are based on case studies from the Google Cybersecurity Professional Certificate, adapted with additional hands-on technical work (firewall configuration, log analysis, scan syntax) to demonstrate applied skills beyond the original course material. Others — such as the Welmi responsible disclosure — document original security research conducted independently on live software, reported and published responsibly.*
 
 ## Portfolio Structure
 
@@ -16,18 +16,24 @@ The focus here is on Blue Team operations, risk management, and incident respons
 
 * [Incident Final Report: E-Commerce Data Breach (IDOR)](./incident-response/ecommerce-breach-report.md) – A formal post-incident report detailing the forensic investigation, containment, and remediation of a forced browsing / IDOR attack.
 
+### 3. Responsible Disclosure (Real-World)
+
+* [Broken Access Control — Welmi (Android)](./responsible-disclosure/welmi/welmi-responsible-disclosure.md) – Coordinated disclosure of a broken access control / client-side trust issue in a production mobile health app. Found during normal use, reported privately, and fixed by the vendor. Published here with the vendor's written permission and signed [acknowledgement letter](./responsible-disclosure/welmi/Welmi_Responsible_Disclosure_Acknowledgement.pdf).
+
 ---
 
 ## Frameworks, Standards & Concepts Used
 
 * **NIST SP 800-30 Rev. 1** (Risk Assessment Guide for Information Security Systems)
-* **OWASP Top 10** (Specifically IDOR / Insecure Direct Object Reference mitigation)
+* **OWASP Top 10** (Broken Access Control, IDOR / Insecure Direct Object Reference)
 * **AAA Framework** (Authentication, Authorization, Auditing)
 * **Incident Response Lifecycle** (Detection, Analysis, Containment, Eradication, Recovery)
 * **Principle of Least Privilege** & Role-Based Access Control (RBAC)
+* **Coordinated Vulnerability Disclosure** (private reporting, vendor remediation, approved public write-up)
 
 ## Tools & Techniques
 
 * **Network Scanning:** Nmap (service/version detection, SSL/TLS cipher enumeration)
 * **Firewall Hardening:** UFW (host-based access control, subnet allow-listing)
 * **Log Analysis & Detection:** Splunk SPL (SIEM query syntax for anomaly detection)
+* **Mobile App Security:** Server-side authorization review, client-side trust analysis
