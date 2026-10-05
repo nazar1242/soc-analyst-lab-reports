@@ -3,7 +3,7 @@
 > **Status:** Resolved & fixed by vendor · Published with vendor's written permission
 > **Evidence:** [Vendor acknowledgement letter (PDF)](Welmi_Responsible_Disclosure_Acknowledgement.pdf)
 > **Researcher:** Nazar Vlasiuk
-> **Report class:** Broken Access Control / client-side trust for entitlement (CWE-284, CWE-862)
+> **Report class:** Broken Access Control / client-side trust for entitlement (CWE-284, CWE-602, CWE-489)
 
 ---
 
